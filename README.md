@@ -1,11 +1,16 @@
 Java代理模式其实就是字节码重组，以满足相应的需求。
 
 一、代理应用场景，主要是3个条件:
+
 1.需要2个角色，被代理对象及执行者
+
 2.被代理对象一定需要做某件事，但是本身没时间做或者不够专业
+
 3.执行者需要持有被代理对象的相关资料
 
+
 二、jdk动态代理
+
 1.jdk代理
 
     // 实现InvocationHandler接口
@@ -35,7 +40,9 @@ Java代理模式其实就是字节码重组，以满足相应的需求。
         surrogateObject.doSth();
     }
 
+
 2.自定义jdk动态代理
+
 自定义jdk动态代理，需要CustomInvocationHandler接口、以及CustomClassLoader、CustomExector、CustomProxy等类。
 
 	//目标对象的方法会转发由InvocationHandle这个接口的invoke方法来调用
@@ -192,6 +199,7 @@ Java代理模式其实就是字节码重组，以满足相应的需求。
 	
 	}
 
+
 3.cglib代理
 	cglib代理实现MethodInterceptor接口即可，cglib代理是生成一个新的子类，并实现父类方法，由于拿到父类的class字节码，所以在创建子类时，也创建父类。
 	
@@ -222,5 +230,6 @@ Java代理模式其实就是字节码重组，以满足相应的需求。
 	}
 
 4.demo地址
+
 https://github.com/13162576590/design-mode
 	
