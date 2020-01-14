@@ -201,6 +201,7 @@ Java代理模式其实就是字节码重组，以满足相应的需求。
 
 
 3.cglib代理
+
 	cglib代理实现MethodInterceptor接口即可，cglib代理是生成一个新的子类，并实现父类方法，由于拿到父类的class字节码，所以在创建子类时，也创建父类。
 	
 	public class CglibProxy implements MethodInterceptor {
