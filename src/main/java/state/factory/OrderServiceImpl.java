@@ -96,6 +96,7 @@ public class OrderServiceImpl implements IOrderService {
 
 
         StateMachine<OrderStatus, OrderStatusChangeEvent> orderStateMachine = orderStateMachineFactory.getStateMachine("orderStateMachineId");
+//        StateMachine<OrderStatus, OrderStatusChangeEvent> orderStateMachine = orderStateMachineFactory.getStateMachine();
 
 //        System.out.println("***********" + orderStateMachine);
         orderStateMachine.start();

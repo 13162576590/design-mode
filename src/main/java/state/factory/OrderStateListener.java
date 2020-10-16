@@ -17,6 +17,8 @@ public class OrderStateListener {
 
     @OnTransition(source = "WAIT_PAYMENT", target = "WAIT_DELIVER")
     public boolean payTransition(Message<OrderStatusChangeEvent> message) {
+        System.out.println("========");
+
         Order order = (Order)message.getHeaders().get("order");
         order.setStatus(OrderStatus.WAIT_DELIVER);
         System.out.println("支付，状态机反馈信息：" + message.getHeaders().toString());

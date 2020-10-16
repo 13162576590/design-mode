@@ -24,47 +24,46 @@ public class OrderTest {
         ConfigurableApplicationContext context = SpringApplication.run(OrderTest.class,args);
 
         IOrderService orderService = context.getBean(IOrderService.class);
-        orderService.create();
-        orderService.create();
-        orderService.pay(1);
-
-        new Thread( "客户线程"){
-            @Override
-            public void run() {
-                orderService.deliver(1);
-                orderService.receive(1);
-            }
-        }.start();
-
-
-
-        orderService.pay(2);
-        orderService.deliver(2);
-        orderService.receive(2);
-
-
-//        for (int i=1; i<8; i++) {
-//            orderService.create();
-//        }
+//        orderService.create();
+//        orderService.create();
+//        orderService.pay(1);
 //
-//        for (int i=1; i<8; i++) {
-//            final int s = i;
-//            new Thread(i + ""){
-//                @Override
-//                public void run() {
-//                    orderService.deliver(s);
-//                    orderService.receive(s);
-//                }
-//            }.start();
-//        }
-
-
-
+//        new Thread( "客户线程"){
+//            @Override
+//            public void run() {
+//                orderService.deliver(1);
+//                orderService.receive(1);
+//            }
+//        }.start();
+//
+//
+//
 //        orderService.pay(2);
 //        orderService.deliver(2);
 //        orderService.receive(2);
 
-//        Thread.sleep(20000);
+
+
+
+
+        int count = 2;
+        for (int i=1; i<count; i++) {
+            orderService.create();
+        }
+
+        for (int i=1; i<count; i++) {
+            final int s = i;
+            new Thread(i + ""){
+                @Override
+                public void run() {
+                    orderService.pay(s);
+//                    orderService.deliver(s);
+//                    orderService.receive(s);
+                }
+            }.start();
+        }
+
+        Thread.sleep(5000);
         System.out.println("全部订单状态：" + orderService.getOrders());
 
     }

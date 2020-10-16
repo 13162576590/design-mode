@@ -1,15 +1,18 @@
 package state.factory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateMachineContext;
 import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.statemachine.config.EnableStateMachine;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
+import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 import org.springframework.statemachine.persist.DefaultStateMachinePersister;
+import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 
 import java.util.EnumSet;
@@ -21,14 +24,21 @@ import java.util.EnumSet;
  * 创建时间：2020/10/14 2:49 下午
  * 创 建 人：chenyouhong
  */
-
-
+/**
+ * 订单状态机配置
+ */
 @Configuration
-@EnableStateMachineFactory(name = "orderStateMachineFactory")
-public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<OrderStatus, OrderStatusChangeEvent> {
+//@EnableStateMachine(name = "orderStateMachine")
+@EnableStateMachineFactory
+        (name = "orderStateMachineFactory")
+public class OrderStateMachineConfig extends EnumStateMachineConfigurerAdapter<OrderStatus, OrderStatusChangeEvent> {
 
     /**订单状态机ID*/
     public static final String orderStateMachineId = "orderStateMachineId";
+
+    @Autowired
+    private StateMachinePersisterService stateMachinePersisterService;
+
 
     /**
      * 配置状态
@@ -58,20 +68,28 @@ public class OrderStateMachineConfig extends StateMachineConfigurerAdapter<Order
                 .withExternal().source(OrderStatus.WAIT_RECEIVE).target(OrderStatus.FINISH).event(OrderStatusChangeEvent.RECEIVED);
     }
 
+    /**
+     * 持久化配置
+     * 实际使用中，可以配合redis等，进行持久化操作
+     * @return
+     */
     @Bean
-    public DefaultStateMachinePersister persister() {
-        return new DefaultStateMachinePersister<>(new StateMachinePersist<Object, Object, Order>() {
-            @Override
-            public void write(StateMachineContext<Object, Object> context, Order contextObj) throws Exception {
-                //此处并没有进行持久化操作
-            }
-
-            @Override
-            public StateMachineContext<Object, Object> read(Order order) throws Exception {
-                //此处直接获取order中的状态，其实并没有进行持久化读取操作
-                return new DefaultStateMachineContext<>(order.getStatus(), null, null, null);
-            }
-        });
+    public StateMachinePersister<OrderStatus, OrderStatusChangeEvent, Order> persister(){
+        return new DefaultStateMachinePersister<>(stateMachinePersisterService);
+//        return new DefaultStateMachinePersister<>(new StateMachinePersist<OrderStatus, OrderStatusChangeEvent, Order>() {
+//            @Override
+//            public void write(StateMachineContext<OrderStatus, OrderStatusChangeEvent> context, Order order) throws Exception {
+//                //此处并没有进行持久化操作
+//                order.setStatus(context.getState());
+//            }
+//
+//            @Override
+//            public StateMachineContext<OrderStatus, OrderStatusChangeEvent> read(Order order) throws Exception {
+//                //此处直接获取order中的状态，其实并没有进行持久化读取操作
+//                StateMachineContext<OrderStatus, OrderStatusChangeEvent> result =new DefaultStateMachineContext<>(order.getStatus(), null, null, null, null, orderStateMachineId);
+//                return result;
+//            }
+//        });
     }
 
 }
